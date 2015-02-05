@@ -1,28 +1,17 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope) {})
+.controller('CategoriesCtrl', ['$scope', 'Categories', function($scope, Categories) {
 
-.controller('ChatsCtrl', function($scope, Chats) {
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  }
-})
+}])
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
-})
+.controller('CategoryCtrl', ['$scope', '$stateParams', 'Categories', function($scope, $stateParams, Categories) {
 
-.controller('FriendsCtrl', function($scope, Friends) {
-  $scope.friends = Friends.all();
-})
+}])
 
-.controller('FriendDetailCtrl', function($scope, $stateParams, Friends) {
-  $scope.friend = Friends.get($stateParams.friendId);
-})
+.controller('ArticlesCtrl', ['$scope', 'Articles', function($scope, Articles) {
 
-.controller('AccountCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
-});
+}])
+
+.controller('ArticleDetailCtrl', ['$scope', '$stateParams', 'Articles', function($scope, $stateParams, Articles) {
+
+}]);
