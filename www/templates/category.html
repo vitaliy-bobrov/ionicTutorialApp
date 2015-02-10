@@ -1,4 +1,13 @@
-<ion-view view-title="Category">
+<ion-view view-title="{{category.name}}">
   <ion-content>
+    <ion-list>
+      <ion-item class="list card" ng-repeat="article in articles" type="item-text-wrap" href="#/tab/category/article/{{article.nid}}">
+      <h2 class="title">{{article.title}}</h2>
+        <div class="item item-image">
+          <img ng-src="{{article.image}}">
+        </div>
+      </ion-item>
+    </ion-list>
+    <ion-infinite-scroll on-infinite="loadMore()" ng-if="morePageExist" distance="1%"></ion-infinite-scroll>
   </ion-content>
 </ion-view>

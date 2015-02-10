@@ -1,10 +1,10 @@
 angular.module('starter.services', [])
 
-.factory('Categories', ['$http', '$q', function($http, $q) {
+.factory('Categories', ['$http', '$q', 'config', function($http, $q, config) {
 
   //Endpoints Variables.
-  var categoriesEndpoint = '',
-      categoryEndpoint = '';
+  var categoriesEndpoint = 'categories',
+      categoryEndpoint = 'category/';
 
   return {
 
@@ -16,13 +16,13 @@ angular.module('starter.services', [])
 
       $http({
         method    : 'GET',
-        url       : categoriesEndpoint,
-        dataType  : 'json'
+        url       : config.serviceBaseUrl + categoriesEndpoint,
+        dataType  : 'json',
       })
-      .success(function(data, status, headers, config){
+      .success(function(data, status, headers, config) {
         defer.resolve(data);
       })
-      .error(function(data, status, headers, config){
+      .error(function(data, status, headers, config) {
         defer.reject(data);
       });
 
@@ -32,18 +32,21 @@ angular.module('starter.services', [])
     /*
      * Return Category by ID.
      */
-    get: function(catId) {
+    get: function(catId, page) {
       var defer = $q.defer();
 
       $http({
         method    : 'GET',
-        url       : categoryEndpoint + catId,
-        dataType  : 'json'
+        url       : config.serviceBaseUrl + categoryEndpoint + catId,
+        dataType  : 'json',
+        params    : {
+          page: page,
+        },
       })
-      .success(function(data, status, headers, config){
+      .success(function(data, status, headers, config) {
         defer.resolve(data);
       })
-      .error(function(data, status, headers, config){
+      .error(function(data, status, headers, config) {
         defer.reject(data);
       });
 
@@ -52,29 +55,32 @@ angular.module('starter.services', [])
   }
 }])
 
-.factory('Articles', ['$http', '$q', function($http, $q) {
+.factory('Articles', ['$http', '$q', 'config', function($http, $q, config) {
 
   //Endpoints Variables.
-  var blogEndpoint = '',
-      articleEndpoint = '';
+  var blogEndpoint = 'articles',
+      articleEndpoint = 'article/';
 
   return {
 
      /*
      * Return All Articles.
      */
-    all: function() {
+    all: function(page) {
       var defer = $q.defer();
 
       $http({
         method    : 'GET',
-        url       : blogEndpoint,
-        dataType  : 'json'
+        url       : config.serviceBaseUrl + blogEndpoint,
+        dataType  : 'json',
+        params    : {
+          page: page,
+        },
       })
-      .success(function(data, status, headers, config){
+      .success(function(data, status, headers, config) {
         defer.resolve(data);
       })
-      .error(function(data, status, headers, config){
+      .error(function(data, status, headers, config) {
         defer.reject(data);
       });
 
@@ -89,13 +95,13 @@ angular.module('starter.services', [])
 
       $http({
         method    : 'GET',
-        url       : articleEndpoint + articleId,
-        dataType  : 'json'
+        url       : config.serviceBaseUrl + articleEndpoint + articleId,
+        dataType  : 'json',
       })
-      .success(function(data, status, headers, config){
+      .success(function(data, status, headers, config) {
         defer.resolve(data);
       })
-      .error(function(data, status, headers, config){
+      .error(function(data, status, headers, config) {
         defer.reject(data);
       });
 

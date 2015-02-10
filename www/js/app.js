@@ -21,6 +21,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 })
 
+.constant('config', {
+  serviceBaseUrl: 'http://bobrovdevdev.devcloud.acquia-sites.com/?q=api/',
+})
+
+.constant('$ionicLoadingConfig', {
+  template: 'Loading...',
+  animation: 'fade-in'
+})
+
 .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
   // Bar with tabs.
   $stateProvider.state('tab', {

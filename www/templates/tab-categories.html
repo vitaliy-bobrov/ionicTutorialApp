@@ -1,4 +1,10 @@
 <ion-view view-title="Categories">
   <ion-content>
+    <ion-list>
+      <ion-item class="item-icon-right" ng-repeat="category in categories" type="item-text-wrap" href="#/tab/category/{{category.tid}}">
+        <h2>{{category.name}} ({{category.articles_count}})</h2>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </ion-item>
+    </ion-list>
   </ion-content>
 </ion-view>

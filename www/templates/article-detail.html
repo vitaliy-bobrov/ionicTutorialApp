@@ -1,4 +1,7 @@
-<ion-view view-title="Article Detail">
-  <ion-content>
+<ion-view view-title="{{article.title}}">
+  <ion-content class="padding">
+    <img ng-src="{{article.image}}" class="padding">
+    <h1>{{article.title}}</h1>
+    <article ng-bind-html="article.body"></article>
   </ion-content>
 </ion-view>
