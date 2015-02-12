@@ -1,10 +1,10 @@
-angular.module('starter.services', [])
+angular.module('blogin.services', [])
 
 .factory('Categories', ['$http', '$q', 'config', function($http, $q, config) {
 
   //Endpoints Variables.
-  var categoriesEndpoint = 'categories',
-      categoryEndpoint = 'category/';
+  var categoriesEndpoint = 'api/categories',
+      categoryEndpoint = 'api/category/';
 
   return {
 
@@ -58,8 +58,8 @@ angular.module('starter.services', [])
 .factory('Articles', ['$http', '$q', 'config', function($http, $q, config) {
 
   //Endpoints Variables.
-  var blogEndpoint = 'articles',
-      articleEndpoint = 'article/';
+  var blogEndpoint = 'api/articles',
+      articleEndpoint = 'api/article/';
 
   return {
 
@@ -106,6 +106,140 @@ angular.module('starter.services', [])
       });
 
       return defer.promise;
+    }
+  }
+}])
+
+.factory('User', ['$http', '$q', '$rootScope', 'storage', 'config', function($http, $q, $rootScope, storage, config) {
+
+  //Endpoints Variables.
+  var loginEndpoint = 'api/user/login',
+      logoutEndpoint = 'api/user/logout',
+      registerEndpoint = 'api/user/register',
+      sessionTokenEndpoint = 'services/session/token';
+
+  return {
+
+    /*
+     * Get services session token.
+     */
+    getSessionToken: function() {
+      var defer = $q.defer();
+
+      $http({
+        method    : 'GET',
+        url       : config.serviceBaseUrl + sessionTokenEndpoint,
+        dataType  : 'text',
+      })
+      .success(function(data, status, headers, config) {
+        defer.resolve(data);
+      })
+      .error(function(data, status, headers, config) {
+        defer.reject(data);
+      });
+
+      return defer.promise;
+    },
+
+    /*
+     * Login User with username and password.
+     */
+    login: function(username, password, token) {
+      var defer = $q.defer();
+
+      $http({
+        method    : 'POST',
+        url       : config.serviceBaseUrl + loginEndpoint,
+        dataType  : 'json',
+        data: {
+          username: username,
+          password: password
+        },
+        headers: {
+          'X-CSRF-Token': token,
+        },
+      })
+      .success(function(data, status, headers, config) {
+        defer.resolve(data);
+      })
+      .error(function(data, status, headers, config) {
+        defer.reject(data);
+      });
+
+      return defer.promise;
+    },
+
+    /*
+     * Logout User.
+     */
+    logout: function(token) {
+      var defer = $q.defer();
+
+      $http({
+        method    : 'POST',
+        url       : config.serviceBaseUrl + logoutEndpoint,
+        dataType  : 'json',
+        headers: {
+          'X-CSRF-Token': token,
+        },
+      })
+      .success(function(data, status, headers, config) {
+        defer.resolve(data);
+      })
+      .error(function(data, status, headers, config) {
+        defer.reject(data);
+      });
+
+      return defer.promise;
+    },
+
+    /*
+     * Register new User.
+     */
+    register: function(data) {
+      var defer = $q.defer();
+
+      $http({
+        method    : 'POST',
+        url       : config.serviceBaseUrl + registerEndpoint,
+        dataType  : 'json',
+        data: {
+          name: data.username,
+          mail: data.email,
+          pass: data.password,
+          status: 1,
+        },
+      })
+      .success(function(data, status, headers, config) {
+        defer.resolve(data);
+      })
+      .error(function(data, status, headers, config) {
+        defer.reject(data);
+      });
+
+      return defer.promise;
+    },
+
+    /*
+     * Save user credentials.
+     */
+    setUserData: function(user, token) {
+      $rootScope.userData = user;
+      $rootScope.token = token;
+
+      storage.set(config.localStoragePrefix + 'token', token);
+      storage.set(config.localStoragePrefix + 'user', user);
+    },
+
+     /*
+     * Remove user credentials.
+     */
+    removeUserData: function() {
+      $rootScope.userData = {};
+      $rootScope.token = false;
+
+      storage.remove(config.localStoragePrefix + 'token');
+      storage.remove(config.localStoragePrefix + 'user');
     }
   }
 }]);

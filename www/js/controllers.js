@@ -1,4 +1,4 @@
-angular.module('starter.controllers', [])
+angular.module('blogin.controllers', [])
 
 .controller('CategoriesCtrl', ['$scope', '$ionicLoading', 'Categories', function($scope, $ionicLoading, Categories) {
   $ionicLoading.show();
@@ -8,6 +8,7 @@ angular.module('starter.controllers', [])
 
     $scope.categories = data;
   }, function(error) {
+    $ionicLoading.hide();
     console.log(error);
   });
 }])
@@ -81,6 +82,124 @@ angular.module('starter.controllers', [])
 
     $scope.article = data[0];
   }, function(error) {
+    $ionicLoading.hide();
     console.log(error);
   });
+}])
+
+.controller('LoginCtrl', ['$rootScope', '$scope', '$ionicLoading', '$ionicModal', 'storage', 'config', 'User', function($rootScope, $scope, $ionicLoading, $ionicModal, storage, config, User) {
+  $scope.loginData = {};
+  $scope.loginError = false;
+  $rootScope.token = storage.get(config.localStoragePrefix + 'token') || false;
+  $rootScope.userData = storage.get(config.localStoragePrefix + 'user') || {};
+  $rootScope.loginSuccess = ($rootScope.token) ? true : false;
+
+  // Init ionicModal
+  $ionicModal.fromTemplateUrl('templates/login.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.modal = modal;
+  });
+
+  $scope.closeLogin = function() {
+    $scope.modal.hide();
+  };
+
+  $rootScope.showLogin = function() {
+    $scope.modal.show();
+  };
+
+  $rootScope.doLogout = function() {
+    $ionicLoading.show();
+
+    User.logout($rootScope.token).then(function() {
+      $rootScope.loginSuccess = false;
+      $scope.loginData = {};
+      $scope.loginError = false;
+
+      User.removeUserData();
+
+      $ionicLoading.hide();
+    }, function(error) {
+      $ionicLoading.hide();
+      console.log(error);
+    });
+  };
+
+  $scope.doLogin = function() {
+    $ionicLoading.show();
+
+    User.getSessionToken().then(function(data) {
+      $rootScope.token = data;
+
+      User.login($scope.loginData.username, $scope.loginData.password, $rootScope.token).then(function(data) {
+        $ionicLoading.hide();
+
+        $scope.loginError = false;
+        $rootScope.loginSuccess = true;
+        User.setUserData(data.user, data.token);
+
+        $scope.modal.hide();
+      }, function(error) {
+        $ionicLoading.hide();
+        $scope.loginError = error;
+      });
+    }, function(error) {
+      $ionicLoading.hide();
+      console.log(error);
+    });
+  };
+
+}])
+
+.controller('RegisterCtrl', ['$rootScope', '$scope', '$ionicLoading', '$ionicModal', 'storage', 'config', 'User', function($rootScope, $scope, $ionicLoading, $ionicModal, storage, config, User) {
+  $scope.registerData = {};
+  $scope.registerError = false;
+
+  // Init ionicModal
+  $ionicModal.fromTemplateUrl('templates/register.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.modal = modal;
+  });
+
+  $scope.closeRegister = function() {
+    $scope.modal.hide();
+  };
+
+  $rootScope.openRegister = function() {
+    $scope.modal.show();
+  };
+
+  $scope.doRegistration = function() {
+    $ionicLoading.show();
+
+    User.register($scope.registerData).then(function(data) {
+      $scope.registerError = false;
+      $scope.closeRegister();
+
+      User.getSessionToken().then(function(data) {
+        $rootScope.token = data;
+
+        User.login($scope.registerData.username, $scope.registerData.password, $rootScope.token).then(function(data) {
+          $ionicLoading.hide();
+
+          $rootScope.loginSuccess = true;
+          User.setUserData(data.user, data.token);
+
+          $scope.modal.hide();
+        }, function(error) {
+          $ionicLoading.hide();
+          console.log(error);
+        });
+      }, function(error) {
+        $ionicLoading.hide();
+        console.log(error);
+      });
+    }, function(error) {
+      $ionicLoading.hide();
+      $scope.registerError = error.form_errors;
+    });
+  }
+
 }]);

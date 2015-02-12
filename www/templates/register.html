@@ -1,0 +1,31 @@
+<ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">Registration</h1>
+    <div class="buttons">
+      <button class="button button-assertive" ng-click="closeRegister()">Close</button>
+    </div>
+  </ion-header-bar>
+  <ion-content class="padding">
+    <form ng-submit="doRegistration()" class="list">
+        <label class="item item-input">
+          <span class="input-label">Usename</span>
+          <input type="text" ng-model="registerData.username">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Email</span>
+          <input type="email" ng-model="registerData.email">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Password</span>
+          <input type="password" ng-model="registerData.password">
+        </label>
+        <button class="button button-block button-balanced" type="submit">Register</button>
+    </form>
+    <div class="card" ng-show="registerError" ng-repeat="error in registerError">
+      <div class="item item-text-wrap assertive">
+        <i class="icon ion-alert-circled"></i>
+        <span ng-bind-html="error"></span>
+      </div>
+    </div>
+  </ion-content>
+</ion-modal-view>

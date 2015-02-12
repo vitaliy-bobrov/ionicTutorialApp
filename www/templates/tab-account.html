@@ -1,0 +1,19 @@
+<ion-view view-title="Account">
+  <ion-content class="padding">
+    <button class="button button-block button-balanced" on-touch="showLogin()" ng-show="!loginSuccess">Login</button>
+    <p ng-show="!loginSuccess">Haven't accout yet? Register!</p>
+    <button class="button button-block button-positive" on-touch="openRegister()" ng-show="!loginSuccess">Register</button>
+    <div class="register" ng-controller="RegisterCtrl"></div>
+    <div class="login" ng-controller="LoginCtrl"></div>
+
+    <div class="card" ng-show="loginSuccess">
+      <div class="item item-avatar">
+        <img ng-src="{{userData.picture.url}}">
+        <h2>{{userData.name | uppercase}}</h2>
+        <p>Email: {{userData.mail}}</p>
+      </div>
+    </div>
+
+    <button class="button button-assertive" on-touch="doLogout()" ng-show="loginSuccess">Logout</button>
+  </ion-content>
+</ion-view>
