@@ -1,8 +1,8 @@
 <ion-view view-title="Account">
   <ion-content class="padding">
-    <button class="button button-block button-balanced" on-touch="showLogin()" ng-show="!loginSuccess">Login</button>
+    <button class="button button-block button-balanced" ng-click="showLogin()" ng-show="!loginSuccess">Login</button>
     <p ng-show="!loginSuccess">Haven't accout yet? Register!</p>
-    <button class="button button-block button-positive" on-touch="openRegister()" ng-show="!loginSuccess">Register</button>
+    <button class="button button-block button-positive" ng-click="openRegister()" ng-show="!loginSuccess">Register</button>
     <div class="register" ng-controller="RegisterCtrl"></div>
     <div class="login" ng-controller="LoginCtrl"></div>
 
@@ -14,6 +14,6 @@
       </div>
     </div>
 
-    <button class="button button-assertive" on-touch="doLogout()" ng-show="loginSuccess">Logout</button>
+    <button class="button button-assertive" ng-click="doLogout()" ng-show="loginSuccess">Logout</button>
   </ion-content>
 </ion-view>

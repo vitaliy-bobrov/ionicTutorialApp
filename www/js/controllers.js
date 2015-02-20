@@ -87,6 +87,90 @@ angular.module('blogin.controllers', [])
   });
 }])
 
+.controller('CommentsCtrl', ['$scope', '$rootScope', '$stateParams', '$ionicLoading', '$ionicScrollDelegate', 'Comments', function($scope, $rootScope, $stateParams, $ionicLoading, $ionicScrollDelegate, Comments) {
+  Comments.check($stateParams.articleId, $rootScope.token).then(function(data) {
+    $scope.comments_count = data;
+    $scope.presentComments = (parseInt($scope.comments_count) > 0) ? true : false;
+    $scope.showComments = $scope.presentComments;
+  }, function(error) {
+    console.log(error);
+  });
+
+  $scope.comments = [];
+  $scope.commentsListVisibility = false;
+  $scope.commentData = {};
+  $scope.showNewCommentForm = false;
+
+  $scope.showCommentForm = function() {
+    $scope.showNewCommentForm = true;
+    $ionicScrollDelegate.resize();
+  };
+
+  $scope.showCommentsSwitcher = function() {
+    $scope.showComments = false;
+    $scope.commentsListVisibility = true;
+    $ionicScrollDelegate.resize();
+  };
+
+  $scope.hideComments = function() {
+    $scope.showComments = true;
+    $scope.commentsListVisibility = false;
+    $ionicScrollDelegate.resize();
+    $ionicScrollDelegate.scrollBottom(true);
+  };
+
+  $scope.getComments = function() {
+    if($scope.comments.length === 0) {
+      $ionicLoading.show();
+
+      Comments.get($stateParams.articleId).then(function(data) {
+        $scope.comments = data;
+
+        $scope.showCommentsSwitcher();
+        $ionicLoading.hide();
+      }, function(error) {
+        $ionicLoading.hide();
+        console.log(error);
+      });
+    }
+    else {
+      $scope.showCommentsSwitcher();
+      $ionicLoading.hide();
+    }
+  };
+
+  $scope.postComment = function() {
+    $ionicLoading.show();
+    $scope.commentData.uid = $rootScope.userData.uid;
+    $scope.commentData.nid = $stateParams.articleId;
+
+    Comments.post($scope.commentData, $rootScope.token).then(function(data) {
+      $scope.comments_count++;
+
+      if($scope.comments.length === 0) {
+        $scope.getComments();
+      }
+      else {
+        $scope.comments.unshift({
+          picture: $rootScope.userData.picture.url,
+          name: $rootScope.userData.name,
+          subject: $scope.commentData.subject,
+          comment_body: $scope.commentData.comment_body.und[0].value
+        });
+
+        $scope.showCommentsSwitcher();
+        $ionicLoading.hide();
+      }
+
+      $scope.commentData = {};
+      $scope.showNewCommentForm = false;
+    }, function(error) {
+      $ionicLoading.hide();
+      console.log(error);
+    });
+  };
+}])
+
 .controller('LoginCtrl', ['$rootScope', '$scope', '$ionicLoading', '$ionicModal', 'storage', 'config', 'User', function($rootScope, $scope, $ionicLoading, $ionicModal, storage, config, User) {
   $scope.loginData = {};
   $scope.loginError = false;

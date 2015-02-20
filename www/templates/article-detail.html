@@ -3,5 +3,33 @@
     <img ng-src="{{article.image}}" class="padding">
     <h1>{{article.title}}</h1>
     <article ng-bind-html="article.body"></article>
+
+    <div class="comments" ng-controller="CommentsCtrl">
+      <button class="button button-positive button-full" ng-show="loginSuccess && !showNewCommentForm" ng-click="showCommentForm()">Leave a comment</button>
+
+      <form ng-submit="postComment()" class="list" ng-show="showNewCommentForm">
+        <label class="item item-input">
+          <span class="input-label">Subject</span>
+          <input type="text" ng-model="commentData.subject">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Comment</span>
+          <textarea ng-model="commentData.comment_body.und[0].value"></textarea>
+        </label>
+        <button class="button button-block button-balanced" type="submit">Submit</button>
+      </form>
+
+      <button class="button button-positive button-full" ng-show="showComments" ng-click="getComments()">Show comments ({{comments_count}})</button>
+      <button class="button button-positive button-full" ng-show="commentsListVisibility" ng-click="hideComments()">Hide comments</button>
+
+      <ion-list class="padding-top" ng-show="commentsListVisibility">
+        <ion-item class="item item-avatar item-text-wrap" ng-repeat="comment in comments">
+          <img ng-src="{{comment.picture}}">
+          <h3>{{comment.name}}</h3>
+          <h2>{{comment.subject}}</h2>
+          <div class="comment--text" ng-bind-html="comment.comment_body"></div>
+        </ion-item>
+      </ion-list>
+    </div>
   </ion-content>
 </ion-view>
